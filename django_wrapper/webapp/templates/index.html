@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Chess_NN</title>
+    </head>
+
+    <body>
+        <form method="POST" action="">
+            {% csrf_token %}
+            <input type="submit" name="option1" value="Go">
+            <label for="option1"> Alekhine Defence - Spassky <i>v.</i> Fischer '72</label>
+            <br>
+            <input type="submit" name="option2" value="Go">
+            <label for="option2"> Kings's Indian Defence - Main Line</label>
+            <br>
+            <input type="submit" name="option3" value="Go">
+            <label for="option3"> Nimzo Defence - Rubenstein Variation</label>
+            <br>
+            <input type="submit" name="option4" value="Go"> 
+            <label for="option4"> Ruy Lopez - Marshall Attack</label> <br>
+        </form>
+
+        <p style="font-size:60%;"> double click! </p>
+
+        <div>
+            <img src="data:image/png;base64, {{ image64 }}" alt="board" width="375" height="375">
+            <img src="https://chessnn-static.s3.eu-west-2.amazonaws.com/board_numbers.png" alt="ranks" width="18" height="375"> <br>
+            <img src="https://chessnn-static.s3.eu-west-2.amazonaws.com/board_letters.png" alt="files" width="375" height="16">
+            <br><br>
+        </div>
+
+        <form method="POST" action="">   
+            {% csrf_token %}
+            <label for="human_move">enter move: </label>
+            <input type="text" name="human_move" size="10">
+            <input type="submit" name="submit"> <br>
+            <br>
+        </form>
+
+        your move: {{ move }} <br>
+        my move: {{ ai_move }} <br>
+        <br>
+        <p>check out the <a href="https://github.com/colurw/chess_NN/blob/main/readme.md" target="_blank">ReadMe</a>.</p>
+        <br>
+        <p style="font-size:60%;"> this site uses essential session cookies </p>
+    </body>
+</html>

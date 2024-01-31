@@ -1,0 +1,6 @@
+# Chess_NN_webapp
+
+Is a version of Chess_NN containerised with docker.  It allows session-based 
+play using Django web framework and a Gunicorn/nginx web server and reverse proxy. 
+
+It requires 4GB RAM to run. 
