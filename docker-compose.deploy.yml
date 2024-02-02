@@ -1,4 +1,6 @@
-# This file can be called from 
+# Docker Hub images can be pushed to a remote host using the local command line: 
+# > docker context create remote --docker "host=ssh://user@remotemachine"
+# > docker-compose --context remote -f docker-compose.deploy.yml up -d
 
 version: '3'
 
