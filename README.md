@@ -1,6 +1,6 @@
 # Chess_NN_webapp
 
-Uses ensemble_solver.py from <a href="https://github.com/colurw/chess_NN/blob/main/readme.md" target="_blank">Chess_NN</a> and Django web framework.  It allows session-based play through a Gunicorn web server and NGINX reverse proxy.  It is containerised with Docker.  When the containers are up, the app is available at http://localhost/play  It requires 4GB RAM to run. 
+Uses the trained models and ensemble_solver.py from <a href="https://github.com/colurw/chess_NN/blob/main/readme.md" target="_blank">Chess_NN</a> and Django web framework.  It allows session-based play through a Gunicorn web server and NGINX reverse proxy.  It is containerised with Docker.  When spun up, the app is available at http://localhost/play.  It requires 4GB RAM to run. 
 
 ### django web framework
 <img src="https://github.com/colurw/chess_NN/assets/66322644/b3d419ff-06b9-4444-85ba-99531d4db79c" align="right" width="300px"/>
@@ -16,7 +16,7 @@ HttpRequest() back to Index.html <br><br>
 As the training data do not include early-game board states, the user must initially 
 select from one of three fully-developed opening options.  This avoids having to 
 implement a castling feature - moves of which were also excluded from the training 
-dataset to allow less-complex functions when encoding raw training data. <br clear="right"/>
+dataset to allow less-complex functions when encoding raw training data. 
 
 ### web_ensemble_solver.py  
 Several neural networks are presented with the same board state.  The 
@@ -28,4 +28,4 @@ The decision critera check the legality of the raw average of all predicted move
 excluding illegal moves or predictions with disappearing/cloned pieces.  If the average still
 does not qualify as a legal move, the most confident prediction is chosen, based on an analysis
 of the probability vectors. If no legal predictions are found, the ensemble resort to a random 
-choice from a list of all legal moves.
+choice from a list of all legal moves. <br clear="right"/>
