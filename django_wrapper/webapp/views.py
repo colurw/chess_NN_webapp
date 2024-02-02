@@ -1,4 +1,4 @@
-""" Receives board setup and player's move data posted from index.html.  Returns a http response. """
+""" Receives board setup and player's move data posted from play.html.  Returns a http response. """
 
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -50,8 +50,8 @@ def image_to_base64(image):
     return img_str
 
 
-def index(request):
-    """ called by urls.py when /index.html is requested by browser, returns http response """
+def play(request):
+    """ called by urls.py when /play.html is requested by browser, returns http response """
     move = None
     ai_move = None
     valid_input = False
@@ -81,7 +81,7 @@ def index(request):
     elif request.method == "POST":
         move = request.POST.get('human_move')
         
-        # Check input string from index.html is valid, eg: 'b3c4' or 'd7d8q'
+        # Check input string from play.html is valid, eg: 'b3c4' or 'd7d8q'
         if check_input(move) == 'fail' and check_input_q(move) == 'fail':
             
             return HttpResponse("invalid input, use format: 'a2a3', or 'a7a8q' if queening a pawn")
@@ -114,7 +114,7 @@ def index(request):
         image = ct.one_hot_to_png(onehot)
         image64 = image_to_base64(image)
         
-        return render(request, "index.html", {'ai_move': ai_move, 'move': move, 'image64': image64, 'fen': fen, 'tag': tag})
+        return render(request, "play.html", {'ai_move': ai_move, 'move': move, 'image64': image64, 'fen': fen, 'tag': tag})
 
     # Convert seleceted opening FEN to one-hot tensor
     board = ct.fen_to_ascii(fen)
@@ -123,4 +123,4 @@ def index(request):
     image = ct.one_hot_to_png(onehot)
     image64 = image_to_base64(image)
 
-    return render(request, "index.html", {'ai_move': ai_move, 'move': move, 'image64': image64})
+    return render(request, "play.html", {'ai_move': ai_move, 'move': move, 'image64': image64})

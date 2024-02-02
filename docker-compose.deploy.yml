@@ -1,17 +1,17 @@
+# This file can be called from 
+
 version: '3'
 
 services:
   djangoapp:
-    build: .
+    image: colurw/chess_nn:webapp
     expose:
       - 8000
     networks:
       - nginx_network
 
   nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile.nginx
+    image: colurw/chess_nn:nginx
     ports:
       - 80:80
     depends_on:

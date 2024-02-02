@@ -1,6 +1,7 @@
 from django.urls import path, include
-from . import views
+from . import views, boot
+
 
 urlpatterns = [
-path('', views.index),
+path('play/', views.play),
 ]

@@ -15,7 +15,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-# print(BASE_DIR) >>> /opt/services/djangoapp/src/django_wrapper
+# print(BASE_DIR) >>> /services/djangoapp/src/django_wrapper
 
 
 # Quick-start development settings - unsuitable for production
@@ -129,8 +129,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'webapp', 'static'),]
 
 ## Serving the STATIC FILES
-# as declared in NginX conf, it must match /opt/services/djangoapp/static/
+# as declared in NginX conf, it must match /services/djangoapp/static/
 STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'static')
 
-# same for media files, it must match /opt/services/djangoapp/media/
+# same for media files, it must match /services/djangoapp/media/
 MEDIA_ROOT = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'media')
