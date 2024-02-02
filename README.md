@@ -4,7 +4,7 @@ Integrates ensemble_solver.py and the models trained by <a href="https://github.
 
 It is containerised with Docker.  When spun up, the app is available at http://localhost/play.  It requires 4GB RAM to run. 
 
-Docker Hub images can be pushed to a remote host using a local CLI:<br><br>
+The Docker Hub images can be pushed to a remote host using a local CLI:<br><br>
 `docker context create remote --docker "host=ssh://user@remotemachine"`<br>
 `docker-compose --context remote -f docker-compose.deploy.yml up -d`<br>
 
