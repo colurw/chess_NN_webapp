@@ -14,11 +14,11 @@ Creates an IP connection to the browser over the Localhost.  When Views.py is
 called by Urls.py, it returns data that populate the Index.html template with the 
 current board image and relevant messages.  <br><br>
 Form data from the browser are sent back to views.py as POST requests, converted
-into tensors, then passed to Ensemble_solver(), which returns a tensor representing 
+into tensors, then passed to ensemble_solver(), which returns a tensor representing 
 the move to be played in response.  <br><br>
-This tensor is converted by Local_chess_tools.py into an image of the next 
+This tensor is converted by local_chess_tools.py into an image of the next 
 board state, and then into a base64 string, which can be sent as an argument of 
-HttpRequest() back to Index.html <br><br>
+HttpRequest() back to index.html <br><br>
 As the training data do not include early-game board states, the user must initially 
 select from one of three fully-developed opening options.  This avoids having to 
 implement a castling feature - moves of which were also excluded from the training 
