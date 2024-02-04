@@ -11,6 +11,7 @@ services:
       - 8000
     networks:
       - nginx_network
+    restart: always
 
   nginx:
     image: colurw/chess_nn:nginx
@@ -20,7 +21,8 @@ services:
       - djangoapp
     networks:
       - nginx_network
-
+    restart: always
+    
 networks:
   nginx_network:
     driver: bridge

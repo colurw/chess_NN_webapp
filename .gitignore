@@ -50,8 +50,5 @@ env.bak/
 venv.bak/
 
 notes.md
-ml_models/general_solver_1/
-ml_models/general_solver_2/
-ml_models/general_solver_3/
-ml_models/general_solver_4/
-
+docker-compose.postgres.yml
+*redis*

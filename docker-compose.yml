@@ -2,11 +2,13 @@ version: '3'
 
 services:
   djangoapp:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.webapp
     expose:
       - 8000
     networks:
-      - nginx_network
+      - web
 
   nginx:
     build:
@@ -17,10 +19,11 @@ services:
     depends_on:
       - djangoapp
     networks:
-      - nginx_network
+      - web
 
 networks:
-  nginx_network:
+  web:
     driver: bridge
+
 
 

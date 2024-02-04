@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # print(BASE_DIR) >>> /services/djangoapp/src/django_wrapper
 
 
-# Quick-start development settings - unsuitable for production
+
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -28,6 +28,7 @@ SECRET_KEY = 'getyourownsecretkey!'
 DEBUG = False
 
 ALLOWED_HOSTS = ['*']
+
 
 # Application definition
 
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'webapp',
+    # 'redis',
 ]
 
 MIDDLEWARE = [
@@ -117,8 +119,22 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# Force session data to refresh after each POST
-SESSION_SAVE_EVERY_REQUEST = True
+# # use redis session caching
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': 'redis://127.0.0.1:6379/1',         
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#         }
+#     }
+# }
+
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+# SESSION_CACHE_ALIAS = 'default'
+
+# # Force session data to refresh after each POST
+# SESSION_SAVE_EVERY_REQUEST = True
 
 
 # Static files (CSS, JavaScript, Images)
