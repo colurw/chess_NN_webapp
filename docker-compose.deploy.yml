@@ -1,4 +1,4 @@
-# Docker Hub images can be pushed to a remote host using the local command line: 
+# Docker Hub images can be pushed to a remote host using the command line: 
 # > docker context create remote --docker "host=ssh://user@remotemachine"
 # > docker-compose --context remote -f docker-compose.deploy.yml up -d
 
@@ -10,7 +10,7 @@ services:
     expose:
       - 8000
     networks:
-      - nginx_network
+      - frontend
     restart: always
 
   nginx:
@@ -20,11 +20,11 @@ services:
     depends_on:
       - djangoapp
     networks:
-      - nginx_network
+      - frontend
     restart: always
     
 networks:
-  nginx_network:
+  frontend:
     driver: bridge
 
 

@@ -25,5 +25,5 @@ RUN cd django_wrapper && python manage.py
 # expose port 8000
 EXPOSE 8000
 
-# define default command to run when starting the container
+# default commands to run when starting the container - start gunicorn server
 CMD ["gunicorn", "--chdir", "django_wrapper", "--bind", ":8000", "django_wrapper.wsgi:application", "--timeout", "0"]

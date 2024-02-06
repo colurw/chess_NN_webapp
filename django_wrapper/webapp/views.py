@@ -12,12 +12,12 @@ from . import web_ensemble_solver as es
 
 def check_input(move):
     """ checks whether move is of format 'a2a3' """
-    valid_chars = "12345678abcdefgh"
+    valid_chars = "12345678abcdefghABCDEFGH"
     if type(move) == str:
         if (len(move) != 4
-                or move[0].islower() == False 
+                or move[0].isalpha() == False 
                 or move[1].isnumeric() == False 
-                or move[2].islower() == False 
+                or move[2].isalpha() == False 
                 or move[3].isnumeric() == False 
                 or set(move) - set(valid_chars) != set()):
             return 'fail'
@@ -27,12 +27,12 @@ def check_input(move):
 
 def check_input_q(move):
     """ checks whether move is of format 'a7a8q' to allow queening """
-    valid_chars = "12345678abcdefghq"
+    valid_chars = "12345678abcdefghqABCDEFGHQ"
     if type(move) == str:
         if (len(move) != 5
-                or move[0].islower() == False 
+                or move[0].isalpha() == False 
                 or move[1].isnumeric() == False 
-                or move[2].islower() == False 
+                or move[2].isalpha() == False 
                 or move[3] != '8' 
                 or move[4] != 'q'
                 or set(move) - set(valid_chars) != set()):
@@ -90,8 +90,8 @@ def play(request):
             valid_input = True 
             # Check move is legal according to chess rules
             fen = request.session.get('session_fen')
-            moves = [str(move[:2]), str(move[2:])]
-            # ..from black's perspective
+            moves = [str(move[:2].lower()), str(move[2:].lower())]
+            # ..from black's perspective 
             flipped_fen = ct.swap_fen_colours(fen, turn='white') 
             if ct.is_move_legal(flipped_fen, moves) == False:
                 
@@ -106,7 +106,12 @@ def play(request):
             onehot = ct.update_one_hot(onehot, move)
         # Get ensemble prediction of best computer move
         onehot = np.array(onehot).reshape(1,64,13)
-        onehot, ai_move, tag = es.ensemble_solver(onehot)
+        onehot, ai_move, tag, checkmate = es.ensemble_solver(onehot)
+        # Detect win condition
+        if checkmate == True:
+
+            return HttpResponse("Checkmate!")
+
         # Save updated FEN
         fen = ct.one_hot_to_fen(onehot)
         request.session['session_fen'] = fen

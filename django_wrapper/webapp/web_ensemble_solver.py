@@ -5,11 +5,7 @@ from tensorflow import keras
 from . import chess_tools_local as ct
 
 # Load models from chess_trainer.py
-# model_1 = keras.models.load_model('../models/general_solver_1')  ## used when not containerised
-# model_2 = keras.models.load_model('../models/general_solver_2')
-# model_3 = keras.models.load_model('../models/general_solver_3')
-# model_4 = keras.models.load_model('../models/general_solver_4')
-model_1 = keras.models.load_model('/services/djangoapp/src/ml_models/general_solver_1')    ## used when containerised
+model_1 = keras.models.load_model('/services/djangoapp/src/ml_models/general_solver_1')
 model_2 = keras.models.load_model('/services/djangoapp/src/ml_models/general_solver_2')
 model_3 = keras.models.load_model('/services/djangoapp/src/ml_models/general_solver_3')
 model_4 = keras.models.load_model('/services/djangoapp/src/ml_models/general_solver_4')
@@ -27,6 +23,7 @@ def ensemble_solver(onehot_board_tensor):
     valid_preds = 0
     valid_legal_preds = 0
     tag = 'none'
+    checkmate = False
 
     # Get board
     x_sample = onehot_board_tensor
@@ -78,10 +75,14 @@ def ensemble_solver(onehot_board_tensor):
                 best_predict = mcf_leg_predict
                 tag = 'mclv'
             else:
-                # Generate a random legal move
-                move = ct.random_legal_move(flipped_fen)
-                best_predict = ct.update_one_hot(x_sample, move)
-                tag = 'rndm'
+                try:
+                    # Generate a random legal move
+                    move = ct.random_legal_move(flipped_fen)
+                    best_predict = ct.update_one_hot(x_sample, move)
+                    tag = 'rndm'
+                except:
+                    # No legal moves available
+                    checkmate = True
     
     # Return onehot board tensor
-    return(best_predict, move, tag)
+    return(best_predict, move, tag, checkmate)

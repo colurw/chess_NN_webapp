@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'getyourownsecretkey!'
+SECRET_KEY = 'oiiawer45iuhsdfiouhq34iuhasdkjns457zdlkjvnd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -133,8 +133,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 # SESSION_CACHE_ALIAS = 'default'
 
-# # Force session data to refresh after each POST
-# SESSION_SAVE_EVERY_REQUEST = True
+# Force session data to refresh after each POST
+SESSION_SAVE_EVERY_REQUEST = True
 
 
 # Static files (CSS, JavaScript, Images)

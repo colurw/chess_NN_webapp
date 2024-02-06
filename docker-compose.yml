@@ -1,3 +1,6 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+# https://devhints.io/docker-compose
+
 version: '3'
 
 services:
@@ -8,7 +11,8 @@ services:
     expose:
       - 8000
     networks:
-      - web
+      - frontend
+    restart: always
 
   nginx:
     build:
@@ -19,10 +23,11 @@ services:
     depends_on:
       - djangoapp
     networks:
-      - web
+      - frontend
+    restart: always
 
 networks:
-  web:
+  frontend:
     driver: bridge
 
 
