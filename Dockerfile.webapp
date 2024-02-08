@@ -1,7 +1,7 @@
 # start from official image
 FROM python:3.10-slim
 
-# arbitrary location choice: you can change the directory
+# create working directory
 RUN mkdir -p /services/djangoapp/src
 WORKDIR /services/djangoapp/src
 

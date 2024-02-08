@@ -6,7 +6,7 @@ version: '3'
 
 services:
   djangoapp:
-    image: colurw/chess_nn:webapp
+    image: colurw/chess_nn:webapp-secretkey
     expose:
       - 8000
     networks:

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # MIT License
 
 # Copyright (c) 2018 Philipp Schmieder
@@ -20,8 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-#!/bin/bash
 
 if ! [ -x "$(command -v docker-compose)" ]; then
   echo 'Error: docker-compose is not installed.' >&2

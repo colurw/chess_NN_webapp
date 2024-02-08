@@ -4,6 +4,7 @@
 version: '3'
 
 services:
+  
   djangoapp:
     build:
       context: .
@@ -12,6 +13,8 @@ services:
       - 8000
     networks:
       - frontend
+    depends_on:
+      - wakeup
     restart: always
 
   nginx:
@@ -26,7 +29,14 @@ services:
       - frontend
     restart: always
 
+  wakeup:
+    build:
+      context: .
+      dockerfile: Dockerfile.wakeup
+    restart: always
+
 networks:
+
   frontend:
     driver: bridge
 
