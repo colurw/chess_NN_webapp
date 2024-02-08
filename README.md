@@ -17,8 +17,7 @@ Form data from the browser are sent back to views.py as POST requests, converted
 into tensors, then passed to ensemble_solver(), which returns a tensor representing 
 the move to be played in response.  <br><br>
 This tensor is converted by local_chess_tools.py into an image of the next 
-board state, which can be sent (as a base64 string) as an argument of 
-HttpRequest() back to Play.html. <br><br>
+board state, which can be sent as a base64 string back to the browser. <br><br>
 As the training data do not include early-game board states, the user must initially 
 select from one of four fully-developed opening options.  This avoids the need to 
 implement castling - moves of which were excluded from the training dataset to allow 
