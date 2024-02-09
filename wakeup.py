@@ -2,11 +2,10 @@
     before loading the ML models and associated libraries. This causes a significant
     delay to the first user of the day.  Wakeup.py prevents this."""
 
-from pythonping import ping
 import urllib3
 import time
 
 target = "http://ec2-18-169-205-217.eu-west-2.compute.amazonaws.com/play/"
 
-time.sleep(120)
+time.sleep(180)
 urllib3.request("GET", target)
