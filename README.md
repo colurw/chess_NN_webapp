@@ -1,14 +1,14 @@
 # Chess_NN_webapp
 
-Integrates ensemble_solver.py and the models trained by <a href="https://github.com/colurw/chess_NN/blob/main/readme.md" target="_blank">Chess_NN</a>, into Django web framework.  It allows session-based play through a Gunicorn web server and NGINX reverse proxy.  
+Integrates ensemble_solver.py and the models trained by <a href="https://github.com/colurw/chess_NN/blob/main/readme.md" target="_blank">Chess_NN</a>, into a Django web framework.  It allows session-based play through a Gunicorn web server and NGINX reverse proxy.  
 
 It is containerised with Docker.  When spun up, the app is available at http://localhost/play.  It requires 4GB RAM to run. 
 
-The Docker Hub images can be pushed to a remote host using a local CLI:<br><br>
+The images created by `docker-compose up` can be retagged and saved to Docker Hub, then pushed to a remote host using:<br><br>
 `docker context create remote --docker "host=ssh://user@remotemachine"`<br>
 `docker-compose --context remote -f docker-compose.deploy.yml up -d`<br>
 
-### django web framework
+### Django web framework
 <img src="https://github.com/colurw/chess_NN/assets/66322644/b3d419ff-06b9-4444-85ba-99531d4db79c" align="right" width="300px"/>
 Creates an IP connection to the browser over the Localhost.  When Views.py is 
 called by Urls.py, it returns data that populate the Play.html template with the 
