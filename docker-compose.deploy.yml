@@ -1,4 +1,5 @@
-# Docker Hub images can be pushed to a remote host using the command line: 
+# With a suitable keypair.pem, Docker Hub images can be pushed to a remote 
+# host using the command line: 
 # > docker context create remote --docker "host=ssh://user@remotemachine"
 # > docker-compose --context remote -f docker-compose.deploy.yml up -d
 
@@ -9,6 +10,8 @@ services:
     image: colurw/chess_nn:webapp-secretkey
     expose:
       - 8000
+    depend_on:
+      - wakeup
     networks:
       - frontend
     restart: always
@@ -23,6 +26,10 @@ services:
       - frontend
     restart: always
     
+  wakeup:
+    image: colurw/chess_nn:wakeup
+    restart: always
+
 networks:
   frontend:
     driver: bridge
