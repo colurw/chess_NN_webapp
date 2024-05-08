@@ -4,10 +4,6 @@ Integrates ensemble_solver.py and the models trained by <a href="https://github.
 
 It is containerised with Docker.  When spun up, the app is available at http://localhost/play.  It requires 4GB RAM to run. 
 
-The Docker Hub images can be pushed to a remote host using a local CLI:<br><br>
-`docker context create remote --docker "host=ssh://user@remotemachine"`<br>
-`docker-compose --context remote -f docker-compose.deploy.yml up -d`<br>
-
 ### django web framework
 <img src="https://github.com/colurw/chess_NN/assets/66322644/b3d419ff-06b9-4444-85ba-99531d4db79c" align="right" width="300px"/>
 Creates an IP connection to the browser over the Localhost.  When Views.py is 
