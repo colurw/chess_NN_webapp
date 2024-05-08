@@ -5,7 +5,7 @@
 import urllib3
 import time
 
-target = "http://ec2-18-169-205-217.eu-west-2.compute.amazonaws.com/play/"
+# target = "http://ec2-18-169-205-217.eu-west-2.compute.amazonaws.com/play/"
 
-time.sleep(180)
-urllib3.request("GET", target)
+# time.sleep(180)
+# urllib3.request("GET", target)

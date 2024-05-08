@@ -5,39 +5,39 @@ version: '3'
 
 services:
   
-  djangoapp:
+  backend:
     build:
       context: .
-      dockerfile: Dockerfile.webapp
+      dockerfile: django_wrapper/Dockerfile
     expose:
       - 8000
-    networks:
-      - frontend
     depends_on:
       - wakeup
+    networks:
+      - bnet
     restart: always
 
   nginx:
     build:
       context: .
-      dockerfile: Dockerfile.nginx
+      dockerfile: nginx/Dockerfile
     ports:
       - 80:80
     depends_on:
-      - djangoapp
+      - backend
     networks:
-      - frontend
+      - bnet
     restart: always
 
   wakeup:
     build:
       context: .
-      dockerfile: Dockerfile.wakeup
+      dockerfile: wakeup/Dockerfile
     restart: always
 
 networks:
 
-  frontend:
+  bnet:
     driver: bridge
 
 

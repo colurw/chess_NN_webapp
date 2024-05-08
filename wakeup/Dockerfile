@@ -2,15 +2,15 @@
 FROM python:3.10-slim
 
 # create working directory
-RUN mkdir -p /pinger
-WORKDIR /pinger
+RUN mkdir -p /wakeup
+WORKDIR /wakeup
 
 # install dependencies
 RUN pip install urllib3
 
 # copy wakeup script
-COPY wakeup.py /pinger
+COPY wakeup/wakeup.py /wakeup
 
 # run script on startup
-CMD ["python", "/pinger/wakeup.py"]
+CMD ["python", "/wakeup/wakeup.py"]
 
