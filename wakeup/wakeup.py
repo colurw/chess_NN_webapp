@@ -5,7 +5,10 @@
 import urllib3
 import time
 
-# target = "http://ec2-18-169-205-217.eu-west-2.compute.amazonaws.com/play/"
+target = "http://ec2-13-40-137-67.eu-west-2.compute.amazonaws.com/play/"
 
-# time.sleep(180)
-# urllib3.request("GET", target)
+time.sleep(180)
+try:
+    urllib3.request("GET", target)
+except:
+    print('wakeup target not available')
