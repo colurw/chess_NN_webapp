@@ -1,6 +1,6 @@
 # Chess_NN_webapp
 
-Integrates ensemble_solver.py and the models trained by <a href="https://github.com/colurw/chess_NN/blob/main/readme.md" target="_blank">Chess_NN</a>, into Django web framework.  It allows session-based play through a Gunicorn web server and NGINX reverse proxy.  
+Integrates ensemble_solver.py and the models trained by <a href="https://github.com/colurw/chess_NN/blob/main/readme.md" target="_blank">Chess_NN</a>, into a Django web framework.  It allows session-based play through a Gunicorn web server and NGINX reverse proxy.  
 
 It is containerised with Docker.  When spun up, the app is available at http://localhost/play.  It requires 4GB RAM to run. 
 
