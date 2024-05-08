@@ -1,5 +1,5 @@
 import numpy as np
-import cv2
+import cv2  # see Dockerfile.webapp
 from PIL import Image,ImageDraw, ImageFont
 import math
 import chess
@@ -117,7 +117,7 @@ def one_hot_to_png(array):
     for i in range(0, 320, 40):
         for j in range(10, 330, 40):
             piece = board[index]
-            draw.text((j, i), piece, fill=(0,0,0,255), align='center', font=ImageFont.truetype('/services/djangoapp/src/django_wrapper/webapp/pieces_font/FreeSerif.ttf', 50))
+            draw.text((j, i), piece, fill=(0,0,0,255), align='center', font=ImageFont.truetype('/services/djangoapp/backend/webapp/pieces_font/FreeSerif.ttf', 50))
             index = index + 1
     # Save image
     # pil_image.save("board.png")

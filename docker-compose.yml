@@ -8,7 +8,7 @@ services:
   djangoapp:
     build:
       context: .
-      dockerfile: Dockerfile.webapp
+      dockerfile: backend/Dockerfile
     expose:
       - 8000
     networks:
@@ -20,7 +20,7 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: Dockerfile.nginx
+      dockerfile: nginx/Dockerfile
     ports:
       - 80:80
     depends_on:
@@ -32,7 +32,7 @@ services:
   wakeup:
     build:
       context: .
-      dockerfile: Dockerfile.wakeup
+      dockerfile: wakeup/Dockerfile
     restart: always
 
 networks:

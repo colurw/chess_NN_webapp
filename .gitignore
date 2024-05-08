@@ -2,7 +2,7 @@
 notes.md
 docker-compose.postgres.yml
 *redis*
-data/
+data/*
 __pycache__/
 secrets/
 
