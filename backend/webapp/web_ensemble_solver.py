@@ -5,10 +5,10 @@ from tensorflow import keras
 from . import chess_tools_local as ct
 
 # Load models from chess_trainer.py
-model_1 = keras.models.load_model('/services/djangoapp/src/ml_models/general_solver_1')
-model_2 = keras.models.load_model('/services/djangoapp/src/ml_models/general_solver_2')
-model_3 = keras.models.load_model('/services/djangoapp/src/ml_models/general_solver_3')
-model_4 = keras.models.load_model('/services/djangoapp/src/ml_models/general_solver_4')
+model_1 = keras.models.load_model('/services/backend/webapp/ml_models/general_solver_1')
+model_2 = keras.models.load_model('/services/backend/webapp/ml_models/general_solver_2')
+model_3 = keras.models.load_model('/services/backend/webapp/ml_models/general_solver_3')
+model_4 = keras.models.load_model('/services/backend/webapp/ml_models/general_solver_4')
 ensemble = [model_1, model_2, model_3, model_4]
 
 
