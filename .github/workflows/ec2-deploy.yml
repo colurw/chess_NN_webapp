@@ -83,7 +83,7 @@ jobs:
           
     - name: Restart containers
       run: |
-        ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} docker compose up -d'
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} docker compose up --detach'
      
     - name: Delete old docker files
       run: |
