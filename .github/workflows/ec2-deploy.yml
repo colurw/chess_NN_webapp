@@ -81,6 +81,11 @@ jobs:
       run: |      
         ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo curl https://raw.githubusercontent.com/colurw/chess_NN_webapp/main/docker-compose.yml -O'  
           
+    - name: Stop and delete all containers
+      run: |
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo docker stop $(docker ps -a -q)'
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo docker rm $(docker ps -a -q)'
+
     - name: Restart containers
       run: |
         ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} docker-compose up -d'
