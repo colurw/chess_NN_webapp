@@ -1,8 +1,6 @@
 # https://docs.docker.com/compose/compose-file/compose-file-v3/
 # https://devhints.io/docker-compose
 
-version: '3'
-
 services:
   
   backend:

@@ -41,41 +41,69 @@ def check_input_q(move):
         return 'fail'
 
 
-# Convert image to base64 string
 def image_to_base64(image):
+    """ converts image to base64 string """
     buffer = BytesIO()
     image.save(buffer, format="PNG")
     img_str = base64.b64encode(buffer.getvalue())
     img_str = img_str.decode("utf-8")
+    
+    return img_str
+
+
+def fen_to_base64(fen):
+    """ converts FEN to base64 string """
+    board = ct.fen_to_ascii(fen)
+    onehot = ct.one_hot_encode(board)        
+    image = ct.one_hot_to_png(onehot)
+    img_str = image_to_base64(image)
+    
     return img_str
 
 
 def play(request):
     """ called by urls.py when /play.html is requested by browser, returns http response """
-    move = None
-    ai_move = None
+    move = ''
+    ai_move = ''
+    tag = ''
     valid_input = False
     fen = request.session.get('session_fen', '8/8/8/8/8/8/8/8 w KQkq - 0 1')
 
-    # If opening option 1 selected, set FEN to Spassky-Fischer 1972
+    # If opening option 1 selected, set FEN to Spassky-Fischer 1972 and update browser
     if request.POST.get('option1') == 'Go':
-        request.session['session_fen'] = '1KR2B1R/1PPQ1PP1/P1N3B1/3N3P/3P1n1p/1p4n1/pbpp1pp1/1krq1b1r w KQkq - 0 1'
-        move = ' ...g3f5 suggested'
+        fen = '1KR2B1R/1PPQ1PP1/P1N3B1/3N3P/3P1n1p/1p4n1/pbpp1pp1/1krq1b1r w KQkq - 0 1'
+        request.session['session_fen'] = fen
+        move = ' ...g3f5 suggested'  
+        image64 = fen_to_base64(fen)
+
+        return render(request, "play.html", {'ai_move': ai_move, 'move': move, 'image64': image64, 'fen': fen, 'tag': tag})
 
     # If opening option 2 selected, set FEN to King's Indian Defence
     elif request.POST.get('option2') == 'Go':
-        request.session['session_fen'] = '1KR1QB1R/PPPB2PP/2N2N2/3PPP2/3p4/1pn1p3/pbp2ppp/1kr1qbnr w KQkq - 0 1'
+        fen = '1KR1QB1R/PPPB2PP/2N2N2/3PPP2/3p4/1pn1p3/pbp2ppp/1kr1qbnr w KQkq - 0 1'
+        request.session['session_fen'] = fen
         move = ' ...play g1f3 to finish opening'
+        image64 = fen_to_base64(fen)
+
+        return render(request, "play.html", {'ai_move': ai_move, 'move': move, 'image64': image64, 'fen': fen, 'tag': tag})
     
     # If opening option 3 selected, set FEN to Nimzo-Indian Defence
     elif request.POST.get('option3') == 'Go':
-        request.session['session_fen'] = '1KR1QB1R/PPP3PP/2NPBN2/4PPb1/4pp2/2np4/ppp3pp/1kr1qbnr w KQkq - 0 1'
-        move = ' ...play g1f3 to finish opening'
+        fen = '1KR1QB1R/PPP3PP/2NPBN2/4PPb1/4pp2/2np4/ppp3pp/1kr1qbnr w KQkq - 0 1'
+        request.session['session_fen'] = fen
+        move = ' ...play g1f3 to finish opening'   
+        image64 = fen_to_base64(fen)
+
+        return render(request, "play.html", {'ai_move': ai_move, 'move': move, 'image64': image64, 'fen': fen, 'tag': tag})
     
     # If opening option 4 selected, set FEN to Ruy Lopez
     elif request.POST.get('option4') == 'Go':
-        request.session['session_fen'] = '1K1RQBNR/PPP1P1PP/2N2PB1/3P4/3p2p1/2n2n1p/pppbpp2/1kr1qb1r w KQkq - 0 1'
+        fen = '1K1RQBNR/PPP1P1PP/2N2PB1/3P4/3p2p1/2n2n1p/pppbpp2/1kr1qb1r w KQkq - 0 1'
+        request.session['session_fen'] = fen
         move = ' ...play e2e4 to finish opening'
+        image64 = fen_to_base64(fen)
+
+        return render(request, "play.html", {'ai_move': ai_move, 'move': move, 'image64': image64, 'fen': fen, 'tag': tag})
 
     # If player move posted, record move
     elif request.method == "POST":
@@ -95,7 +123,7 @@ def play(request):
             flipped_fen = ct.swap_fen_colours(fen, turn='white') 
             if ct.is_move_legal(flipped_fen, moves) == False:
                 
-                return HttpResponse("illegal move detected!")
+                return HttpResponse("Illegal move detected! \n\nNB: Use of the 'back' button is not allowed!")
 
         # Load FEN
         fen = request.session.get('session_fen')
