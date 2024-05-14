@@ -4,6 +4,8 @@ Integrates ensemble_solver.py and the models trained by <a href="https://github.
 
 It is containerised with Docker.  When spun up, the app is available at http://localhost/play.  It requires 4GB RAM to run. 
 
+When updated code is pushed to Github, an Actions Workflow builds the Docker images and pushes them to DockerHub.  These are then pulled using SSH, alongside the latest docker-compose file, to an AWS EC2 instance and spun up.
+
 ### django web framework
 <img src="https://github.com/colurw/chess_NN/assets/66322644/b3d419ff-06b9-4444-85ba-99531d4db79c" align="right" width="300px"/>
 Creates an IP connection to the browser over the Localhost.  When Views.py is 
