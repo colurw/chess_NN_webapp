@@ -20,6 +20,8 @@ RUN chown -R app:app /services
 USER app
 
 # start django server
+ARG DJANGO_SECRET_KEY
+ENV DJANGO_SECRET_KEY ${DJANGO_SECRET_KEY}
 RUN cd backend && python manage.py 
 
 # expose port 8000

@@ -1,0 +1,94 @@
+name: Build Images And Push To DockerHub
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  AWS_PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
+  HOSTNAME_AT_PUBLIC_IP: ${{ secrets.HOSTNAME_AT_PUBLIC_IP }}
+  DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+      - name: Build and push 'nginx' image
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          file: ./nginx/Dockerfile
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/chessnn:nginx
+
+      - name: Build and push 'wakeup' image
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          file: ./wakeup/Dockerfile
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/chessnn:wakeup
+
+      - name: Build and push 'backend' image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          file: ./backend/Dockerfile
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/chessnn:backend
+          build-args: |
+            "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}"
+          # DockerHub repo must be private to avoid leaking secret key!
+
+  deploy:
+    needs: build 
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set permissions for SSH private key
+      run: |
+        echo "${{ secrets.AWS_PRIVATE_KEY }}" > key.pem
+        chmod 600 key.pem
+
+    - name: Pull Docker images
+      run: |
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password ${{ secrets.DOCKERHUB_TOKEN }}'
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo docker pull colurw/chessnn:backend'
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo docker pull colurw/chessnn:nginx'
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo docker pull colurw/chessnn:wakeup'
+
+    - name: Update docker-compose file
+      run: |      
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo curl https://raw.githubusercontent.com/colurw/chess_NN_webapp/main/docker-compose.yml -O'  
+          
+    - name: Restart containers
+      run: |
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} docker compose up -d'
+     
+    - name: Delete old docker files
+      run: |
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ env.HOSTNAME_AT_PUBLIC_IP }} 'sudo docker system prune -a -f'
+
+
+
+   

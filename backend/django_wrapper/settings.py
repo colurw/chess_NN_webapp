@@ -18,16 +18,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # print(BASE_DIR) >>> /services/backend
 
 
-
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'oiiawer45iuhsdfiouhq34iuhasdkjns457zdlkjvnd'
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['ec2-18-169-205-217.eu-west-2.compute.amazonaws.com']
 
 
 # Application definition

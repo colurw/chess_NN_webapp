@@ -1,7 +1,14 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+# https://devhints.io/docker-compose
+
+version: '3'
 
 services:
+  
   backend:
-    image: colurw/chessnn:backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     expose:
       - 8000
     depends_on:
@@ -11,7 +18,9 @@ services:
     restart: always
 
   nginx:
-    image: colurw/chessnn:nginx
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
     ports:
       - 80:80
     depends_on:
@@ -19,9 +28,11 @@ services:
     networks:
       - bnet
     restart: always
-    
+
   wakeup:
-    image: colurw/chessnn:wakeup
+    build:
+      context: .
+      dockerfile: wakeup/Dockerfile
     restart: always
 
 networks:
