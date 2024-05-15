@@ -28,7 +28,4 @@ output that is substantially more accurate than any single neural network is cap
 of producing, analogous to classic wisdom-of-the-crowds quantity estimation findings.
 
 The decision critera check the legality of the raw average of all predicted moves, before
-excluding illegal moves or predictions with disappearing/cloned pieces.  If the average still
-does not qualify as a legal move, the most confident prediction is chosen, based on an analysis
-of the probability vectors. If no legal predictions are found, all possible legal moves are calculated using
-Python Chess library, and the legal move with the highest cosine similarity to the ensemble's raw average prediction is selected. <br clear="right"/>
+excluding illegal moves or predictions with disappearing/cloned pieces.  If the average still does not qualify as a legal move, the most confident prediction is chosen, based on an analysis of the probability vectors. If no legal predictions are found, all possible legal moves are calculated using Python Chess library, and the tensor with the highest cosine similarity to the ensemble's raw average prediction is selected as the new board state. <br clear="right"/>
