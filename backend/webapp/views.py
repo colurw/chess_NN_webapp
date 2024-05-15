@@ -123,7 +123,7 @@ def play(request):
             flipped_fen = ct.swap_fen_colours(fen, turn='white') 
             if ct.is_move_legal(flipped_fen, moves) == False:
                 
-                return HttpResponse("Illegal move detected! \n\nNB: Use of the 'back' button is not allowed!")
+                return HttpResponse("Illegal move detected! ...NB: Undoing moves with 'back' button is cheating!")
 
         # Load FEN
         fen = request.session.get('session_fen')
