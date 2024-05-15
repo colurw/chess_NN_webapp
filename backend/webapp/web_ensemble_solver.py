@@ -19,23 +19,22 @@ def ensemble_solver(onehot_board_tensor):
     rejected = 0
     raw_total = np.zeros((64,13), dtype=float)
     legal_total = np.zeros((64,13), dtype=float)
-    max_lc_score = -float('inf')
+    max_lc_score = -10000000000000
     valid_preds = 0
     valid_legal_preds = 0
     tag = 'none'
     checkmate = False
 
     # Get board
-    x_sample = onehot_board_tensor
     fen = ct.one_hot_to_fen(onehot_board_tensor)
     # Evaluate board with every model
     for model in ensemble:
-        y_predict = model(x_sample)
+        y_predict = model(onehot_board_tensor)
         y_predict = np.array(y_predict).reshape(1,64,13)
         # Sum all predictions
         raw_total = np.add(raw_total, y_predict)
         # Remove non-sensible solo predictions
-        move = ct.is_only_one_move(x_sample, y_predict)
+        move = ct.is_only_one_move(onehot_board_tensor, y_predict)
         if move == False:
             rejected += 1
         else:
@@ -57,32 +56,32 @@ def ensemble_solver(onehot_board_tensor):
     avg_leg_predict = legal_total         # which removes runtime division error from focused_conf_score()
 
     # Apply criteria to choose best prediction
-    move = ct.is_only_one_move(x_sample, avg_raw_predict)
+    move = ct.is_only_one_move(onehot_board_tensor, avg_raw_predict)
     flipped_fen = ct.swap_fen_colours(fen, turn='black')
     if move != False and ct.is_move_legal(flipped_fen, move) == True:
         # Use average of all ensemble predictions
-        best_predict = avg_raw_predict
+        ensemble_predict = avg_raw_predict
         tag = 'avrw'
     else:
-        move = ct.is_only_one_move(x_sample, avg_leg_predict)
+        move = ct.is_only_one_move(onehot_board_tensor, avg_leg_predict)
         if move != False and ct.is_move_legal(flipped_fen, move) == True:
             # Use average of legal ensemble predictions, if move is valid and legal
-            best_predict = avg_leg_predict
+            ensemble_predict = avg_leg_predict
             tag = 'avlv'
         else:
             if valid_legal_preds >= 1:
                 # Use most confident legal solo prediction
-                best_predict = mcf_leg_predict
+                ensemble_predict = mcf_leg_predict
                 tag = 'mclv'
             else:
                 try:
                     # Generate a random legal move
-                    move = ct.random_legal_move(flipped_fen)
-                    best_predict = ct.update_one_hot(x_sample, move)
-                    tag = 'rndm'
+                    mslm_fen = ct.one_hot_to_fen(onehot_board_tensor, turn='white')
+                    ensemble_predict = ct.most_similar_legal_move(mslm_fen, avg_raw_predict)
+                    tag = 'mslm'
                 except:
                     # No legal moves available
                     checkmate = True
     
     # Return onehot board tensor
-    return(best_predict, move, tag, checkmate)
+    return(ensemble_predict, move, tag, checkmate)

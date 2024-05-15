@@ -1,10 +1,10 @@
 # Chess_NN_webapp
 
-Integrates ensemble_solver.py and the models trained by <a href="https://github.com/colurw/chess_NN/blob/main/readme.md" target="_blank">Chess_NN</a>, into Django web framework.  It allows session-based play through a Gunicorn web server and NGINX reverse proxy.  
+Integrates ensemble_solver.py and the models trained by <a href="https://github.com/colurw/chess_NN/blob/main/readme.md" target="_blank">colurw/chess_NN</a>, into Django web framework.  It allows session-based play through a Gunicorn web server and NGINX reverse proxy.  
 
 It is containerised with Docker.  When spun up, the app is available at http://localhost/play.  It requires 4GB RAM to run. 
 
-When updated code is pushed to Github, an Actions Workflow builds the Docker images and pushes them to DockerHub.  These are then pulled using SSH, alongside the latest docker-compose file, to an AWS EC2 instance and spun up.
+When updated code is pushed to Github, an Actions Workflow builds the Docker images and pushes them to DockerHub.  These (along with the latest docker-compose.yml file) are then pulled to an AWS EC2 instance and spun up, using the SSH protocol.
 
 ### django web framework
 <img src="https://github.com/colurw/chess_NN/assets/66322644/b3d419ff-06b9-4444-85ba-99531d4db79c" align="right" width="300px"/>
@@ -30,5 +30,5 @@ of producing, analogous to classic wisdom-of-the-crowds quantity estimation find
 The decision critera check the legality of the raw average of all predicted moves, before
 excluding illegal moves or predictions with disappearing/cloned pieces.  If the average still
 does not qualify as a legal move, the most confident prediction is chosen, based on an analysis
-of the probability vectors. If no legal predictions are found, the ensemble resort to a random 
-choice from a list of all legal moves. <br clear="right"/>
+of the probability vectors. If no legal predictions are found, all possible legal moves are calculated using
+Python Chess library, and the legal move with the highest cosine similarity to the ensemble's raw average prediction is selected. <br clear="right"/>
