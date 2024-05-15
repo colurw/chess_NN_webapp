@@ -34,14 +34,14 @@ def ensemble_solver(onehot_board_tensor):
         # Sum all predictions
         raw_total = np.add(raw_total, y_predict)
         # Remove non-sensible solo predictions
-        move = ct.is_only_one_move(onehot_board_tensor, y_predict)
-        if move == False:
+        ai_move = ct.is_only_one_move(onehot_board_tensor, y_predict)
+        if ai_move == False:
             rejected += 1
         else:
             valid_preds += 1
             # Sum remaining legal solo predictions
             flipped_fen = ct.swap_fen_colours(fen, turn='black')
-            if ct.is_move_legal(flipped_fen, move) == True or remove_illegal == False:
+            if ct.is_move_legal(flipped_fen, ai_move) == True or remove_illegal == False:
                 valid_legal_preds += 1
                 legal_total = np.add(legal_total, y_predict)
                 # Get confidence score and keep record of most confident legal prediction
@@ -56,15 +56,15 @@ def ensemble_solver(onehot_board_tensor):
     avg_leg_predict = legal_total         # which removes runtime division error from focused_conf_score()
 
     # Apply criteria to choose best prediction
-    move = ct.is_only_one_move(onehot_board_tensor, avg_raw_predict)
+    ai_move = ct.is_only_one_move(onehot_board_tensor, avg_raw_predict)
     flipped_fen = ct.swap_fen_colours(fen, turn='black')
-    if move != False and ct.is_move_legal(flipped_fen, move) == True:
+    if ai_move != False and ct.is_move_legal(flipped_fen, ai_move) == True:
         # Use average of all ensemble predictions
         ensemble_predict = avg_raw_predict
         tag = 'avrw'
     else:
-        move = ct.is_only_one_move(onehot_board_tensor, avg_leg_predict)
-        if move != False and ct.is_move_legal(flipped_fen, move) == True:
+        ai_move = ct.is_only_one_move(onehot_board_tensor, avg_leg_predict)
+        if ai_move != False and ct.is_move_legal(flipped_fen, ai_move) == True:
             # Use average of legal ensemble predictions, if move is valid and legal
             ensemble_predict = avg_leg_predict
             tag = 'avlv'
@@ -78,10 +78,11 @@ def ensemble_solver(onehot_board_tensor):
                     # Generate a random legal move
                     mslm_fen = ct.one_hot_to_fen(onehot_board_tensor, turn='white')
                     ensemble_predict = ct.most_similar_legal_move(mslm_fen, avg_raw_predict)
+                    ai_move = ct.is_only_one_move(onehot_board_tensor, ensemble_predict)
                     tag = 'mslm'
                 except:
                     # No legal moves available
                     checkmate = True
     
     # Return onehot board tensor
-    return(ensemble_predict, move, tag, checkmate)
+    return(ensemble_predict, ai_move, tag, checkmate)
