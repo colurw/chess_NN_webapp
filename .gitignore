@@ -5,8 +5,4 @@ docker-compose.postgres.yml
 data/
 __pycache__/
 secrets/
-
-
-
-
-
+alternative docker files/init-letsencrypt.sh

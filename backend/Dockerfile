@@ -1,6 +1,9 @@
 # start from official image
 FROM python:3.10-slim
 
+# update OS
+RUN apt-get update && apt-get upgrade -y 
+
 # create working directory
 RUN mkdir -p /services
 WORKDIR /services
