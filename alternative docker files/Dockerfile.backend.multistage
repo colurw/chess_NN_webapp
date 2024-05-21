@@ -1,0 +1,51 @@
+# Builds a larger image than the single-stage version!!
+
+### build stage ###
+FROM python:3.10-slim as builder
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# create working directory
+RUN mkdir -p /services
+WORKDIR /services
+
+# install dependencies
+COPY requirements.txt /services/
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /services/wheels -r requirements.txt 
+
+
+### final stage ###
+FROM python:3.10-slim
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# create working directory
+RUN mkdir -p /services
+WORKDIR /services
+
+# install pre-built wheels
+COPY --from=builder /services/wheels /wheels
+COPY --from=builder /services/requirements.txt .
+RUN pip install --no-cache /wheels/*
+
+# copy project code from 'backend' folder
+COPY . /services
+
+# change to non-root user 'app'
+RUN mkdir -p /home/app && addgroup --system app \
+    && adduser --system --group app \
+    && chown -R app:app /services
+USER app
+
+# start django server
+ARG DJANGO_SECRET_KEY
+ENV DJANGO_SECRET_KEY ${DJANGO_SECRET_KEY}
+RUN cd backend && python manage.py 
+
+# expose port 8000
+EXPOSE 8000
+
+# default commands to run when starting the container - start gunicorn server
+CMD ["gunicorn", "--chdir", "backend", "--bind", ":8000", "django_wrapper.wsgi:application", "--timeout", "0"]

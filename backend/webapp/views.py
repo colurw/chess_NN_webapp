@@ -112,7 +112,8 @@ def play(request):
         # Check input string from play.html is valid, eg: 'b3c4' or 'd7d8q'
         if check_input(move) == 'fail' and check_input_q(move) == 'fail':
             
-            return HttpResponse("invalid input, use format: 'a2a3', or 'a7a8q' if queening a pawn")
+            return HttpResponse("Invalid input! <br><br> \
+                                 use format: 'a2a3', or 'a7a8q' if promoting a pawn")
               
         else:
             valid_input = True 
@@ -123,7 +124,9 @@ def play(request):
             flipped_fen = ct.swap_fen_colours(fen, turn='white') 
             if ct.is_move_legal(flipped_fen, moves) == False:
                 
-                return HttpResponse("Illegal move detected! ...NB: Undoing moves with 'back' button is cheating!")
+                return HttpResponse("Illegal move detected! <br><br> \
+                                     NB: <br> undoing moves with 'back' button is cheating! <br> \
+                                     if promoting a pawn, enter 'a7a8q'")
 
         # Load FEN
         fen = request.session.get('session_fen')
