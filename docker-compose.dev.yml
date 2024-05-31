@@ -1,0 +1,42 @@
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+# https://devhints.io/docker-compose
+
+services:
+  
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    expose:
+      - 8000
+    depends_on:
+      - wakeup
+    networks:
+      - bnet
+    restart: always
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+    networks:
+      - bnet
+    restart: always
+
+  wakeup:
+    build:
+      context: .
+      dockerfile: wakeup/Dockerfile
+    restart: always
+
+networks:
+  bnet:
+    driver: bridge
+
+
+
+

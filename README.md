@@ -2,9 +2,11 @@
 
 Integrates ensemble_solver.py and the models trained by <a href="https://github.com/colurw/chess_NN/blob/main/readme.md" target="_blank">colurw/chess_NN</a>, into Django web framework.  It allows session-based play through a Gunicorn web server and NGINX reverse proxy.  
 
-It is containerised with Docker.  When spun up, the app is available at http://localhost/play.  It requires 4GB RAM to run. 
+It is containerised with Docker.  When spun up, the app is available at http://localhost/play.  It requires 2GB RAM to run.
 
 When updated code is pushed to Github, an Actions Workflow builds the Docker images and pushes them to DockerHub.  These (along with the latest docker-compose.yml file) are then pulled to an AWS EC2 instance and spun up, using the SSH protocol.
+
+Run it locally using `docker compose -f docker-compose.dev.yml up`
 
 ### django web framework
 <img src="https://github.com/colurw/chess_NN/assets/66322644/b3d419ff-06b9-4444-85ba-99531d4db79c" align="right" width="300px"/>

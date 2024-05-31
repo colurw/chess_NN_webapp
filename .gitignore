@@ -6,3 +6,5 @@ data/
 __pycache__/
 secrets/
 alternative docker files/init-letsencrypt.sh
+backend/webapp/web_ensemble_solverOLD.py
+backend/webapp/test.py

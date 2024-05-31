@@ -3,7 +3,6 @@ import cv2
 from PIL import Image,ImageDraw, ImageFont
 import math
 import chess
-import random
 
 
 def fen_to_ascii(FEN):
@@ -22,6 +21,7 @@ def fen_to_ascii(FEN):
     list = board.split()
     arr = np.array(list)
     arr = arr.reshape(-1, 8)
+
     return arr
 
 
@@ -32,6 +32,7 @@ def one_hot_encode(array):
     encoding = {'r':0, 'n':1, 'b':2, 'q':3, 'k':4, 'p':5, 'R':6, 'N':7, 'B':8, 'Q':9, 'K':10, 'P':11, '.':12}
     for square, char in enumerate(input):
         one_hot[square][encoding[char]] = 1 
+
     return one_hot
 
 
@@ -47,6 +48,7 @@ def one_hot_decode(array):
     list = board.split()
     arr2 = np.array(list)
     arr2 = arr2.reshape(-1, 8)
+
     return arr2
 
 
@@ -61,6 +63,7 @@ def one_hot_to_unicode(array):
         board = board + piece
         if (i+1) % 8 == 0 and i != 0:
             board = board + '\n'
+
     return board
 
 
@@ -69,6 +72,7 @@ def one_hot_to_fen(array, turn='black'):
     board = one_hot_decode(array).flatten()
     FEN = []
     gap_count = 1
+
     for index, piece in enumerate(board):
         if piece != '.':
             FEN.append(str(piece))
@@ -81,6 +85,7 @@ def one_hot_to_fen(array, turn='black'):
         if (index+1) % 8 == 0 and index != 63 and index != 0:
             FEN.append('/')
             gap_count = 1
+
     string = ' '.join([str(elem) for elem in FEN])
     string = string.replace(' ', '')
     if turn == 'black':
@@ -99,11 +104,13 @@ def one_hot_to_png(array):
         index = np.argmax(square)
         piece = decoding[index]
         board.append(piece)
+
     # Create image file
     image = np.full((338, 340, 3),fill_value=255, dtype=np.uint8)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     pil_image = Image.fromarray(image)
     draw = ImageDraw.Draw(pil_image)
+
     # Draw checked pattern
     offset_x = 9
     offset_y = 8
@@ -112,6 +119,7 @@ def one_hot_to_png(array):
         for j in range(0, 8, 1):
             if (i % 2 == 0 and j % 2 == 1) or (i % 2 == 1 and j % 2 == 0):
                 draw.rectangle((j*40+offset_x, i*40+offset_y, (j*40)+40+offset_x, (i*40)+40+offset_y), fill=(225, 225, 225), outline=(225, 225, 225))
+
     # Draw pieces
     index = 0
     for i in range(0, 320, 40):
@@ -119,22 +127,8 @@ def one_hot_to_png(array):
             piece = board[index]
             draw.text((j, i), piece, fill=(0,0,0,255), align='center', font=ImageFont.truetype('/services/backend/webapp/pieces_font/FreeSerif.ttf', 50))
             index = index + 1
-    # Save image
-    # pil_image.save("board.png")
+
     return pil_image
-
-
-def reshape_output(y_data, n_outputs):
-    """ reshapes output: ndarray[puzzle, square, piece_ohe_vector] into: list[square, ndarray[puzzle, piece_ohe_vector]] """
-    list = []
-    for index in range(n_outputs):
-        y = []
-        for puzzle in y_data:
-                square = puzzle[index]
-                y.append(square)
-        z = np.array(y, dtype='bool')
-        list.append(z)
-    return list
 
 
 def index_to_algebraic(square):
@@ -142,90 +136,55 @@ def index_to_algebraic(square):
     letter = 'abcdefgh'
     letter = letter[(square % 8)]
     number = 8 - math.floor(square/8)
+
     return letter + str(number)
-
-
-def is_only_one_move(x_array, y_array, algebraic=True):
-    """ Compares boards to check exactly one piece has moved and returns relevant squares, else 'False' """
-    decoding = {0:'\u265C', 1:'\u265E', 2:'\u265D', 3:'\u265B', 4:'\u265A', 5:'\u265F', 6:'\u2656', 7:'\u2658', 8:'\u2657', 9:'\u2655', 10:'\u2654', 11:'\u2659', 12:' '}
-    x_board = []
-    y_board = []
-    move_1 = ''
-    move_2 = ''
-    # Convert one-hot x_array into list of pieces
-    arr1 = x_array.reshape(64,13)
-    for i, piece_vector in enumerate(arr1):
-        index = np.argmax(piece_vector)
-        piece = decoding[index]
-        x_board.append(piece)
-    # Convert categorical probabilities of y_array into list of pieces
-    arr2 = y_array.reshape(64,13)
-    for j, piece_vector in enumerate(arr2):
-        index = np.argmax(piece_vector)
-        piece = decoding[index]
-        y_board.append(piece)
-    # Compare lists to check only one piece has moved
-    count = 0
-    for square in range(len(x_board)):
-        if x_board[square] != y_board[square]:
-            # Record relevant squares
-            if count == 0:
-                move_1 = index_to_algebraic(square)
-                square_1 = square
-            if count == 1:
-                move_2 = index_to_algebraic(square)
-                square_2 = square
-            count += 1    
-    if count == 2:   
-        output = [move_1, move_2]
-        if algebraic == False:
-            output = [square_1, square_2]
-    else:
-        output = False
-    return output
 
 
 def is_move_legal(FEN, moves):
     """ checks if an algebraic notation move is legal according to chess rules, using python-chess library """
-    board = chess.Board(FEN)
+    board = chess.Board(FEN, chess960=True)
     alt_1 = moves[0] + moves[1]
     alt_2 = moves[1] + moves[0]
     if chess.Move.from_uci(alt_1) in board.legal_moves:
-        boolean = True
+        is_legal = True
     elif chess.Move.from_uci(alt_2) in board.legal_moves:
-        boolean = True
+        is_legal = True
     else:
-        boolean = False
-    return boolean
+        is_legal = False
+
+    return is_legal
 
 
 def any_cloned_pieces(x_array, y_array):
     """ compares input with prediction and returns True if any piece is cloned during a move """
     one_hot = np.zeros(shape=(64,13), dtype=int)
     x_array = x_array.astype(int)
+
     # convert y_array from categorical probabilities to one-hot
     y_array = np.array(y_array).reshape(64,13)
     for square, piece_vector in enumerate(y_array):
         index = np.argmax(piece_vector)
         one_hot[square][index] = 1 
     y_array = one_hot.reshape(1,64,13)
-    # remove empty square category
+
+    # remove empty square category and get total of each piece type
     x_array = np.delete(x_array, 12, axis=2)
     y_array = np.delete(y_array, 12, axis=2)
-    # get total of each piece type
     x_totals = x_array.sum(axis=1)
     y_totals = y_array.sum(axis=1)
+
     # check if any piece total has increased
     sub = np.subtract(x_totals, y_totals)
     boolean = np.any(sub < 0)
     return boolean
 
 
-def confid_score(y_array, exp=False):
+def confidence_score(y_array, exp=False):
     """ Evaluates the degree of confidence in a prediction, based on the whole board """
     total = 0.0
     board = y_array.reshape(64,13)
     for piece_vector in board:
+
         # Subtract all the lowest values in the piece vector from the highest value
         index = np.argmax(piece_vector)
         if exp == True:
@@ -239,66 +198,62 @@ def confid_score(y_array, exp=False):
             others = np.sum(piece_vector) - highest
         certainty = highest - others
         total += certainty
-    #print('cs:', total)
+
     return total
 
 
-def focused_confid_score(x_array, y_array, exp=False):
-    """ Evaluates the degree of confidence in a prediction, based on the two active squares only """
-    moves = is_only_one_move(x_array, y_array, algebraic=False)
-    if moves == False:
-        total = 0.0
-    else:
-        total = 0.0
-        board = y_array.reshape(64,13)
-        for square, piece_vector in enumerate(board):
-            if square == moves[0] or square == moves[1]:
-                # Subtract all the lowest values in the piece vector from the highest value
-                index = np.argmax(piece_vector)
-                if exp == True:
-                    highest = piece_vector[index] ** 2
-                    exp_sum = 0.0
-                    for value in piece_vector:
-                        exp_sum += value ** 2
-                    others = exp_sum - highest
-                else:
-                    highest = piece_vector[index]
-                    others = np.sum(square) - highest
-                certainty = highest - others
-                total += certainty
-    #print('cs:', total)
-    return total
-
-
-def random_legal_move(FEN):
-    """ Returns a random legal move in alegebraic notation, usimg python-chess library """
-    board = chess.Board(FEN)
-    moves = []
-    for move in board.legal_moves:
-        moves.append(move)
-    rand_num = random.sample(range(len(moves)), 1)
-    return moves[rand_num[0]]
-
-
-def update_one_hot(array, alg_move):
+def update_one_hot(tensor, alg_move):
     """ Updates one-hot array with an algebraic notation move """
-    board = one_hot_decode(array)
-    move = str(alg_move)  ## e.g. 'e1f1'
-    dict = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5, 'g':6, 'h':7}
-    x_from = dict[move[0]]
-    y_from = 8-int(move[1])
-    x_to = dict[move[2]]
-    y_to = 8 - int(move[3])
-    piece = board[y_from][x_from]
-    board[y_from][x_from] = '.'
-    board[y_to][x_to] = piece
-    # Promote pawn on last rank to queen
-    if piece == 'p' and y_to == 0:
-        board[y_to][x_to] = 'q'
-    if piece == 'P' and y_to == 7:
-        board[y_to][x_to] = 'Q'
-    array = one_hot_encode(board)
-    return array
+    board = one_hot_decode(tensor)
+    move = str(alg_move).lower()
+
+    if move == 'd1a1' and board[7][3] == 'k':
+        # black kingside castling  
+        board[7][0] = '.'
+        board[7][1] = 'k'
+        board[7][2] = 'r'
+        board[7][3] = '.'
+
+    elif move == 'd1h1'and board[7][3] == 'k':
+        # black queenside castling  
+        board[7][3] = '.'
+        board[7][5] = 'r'
+        board[7][6] = 'k'
+        board[7][7] = '.'
+
+    elif move == 'd8a8' and board[0][3] == 'K':
+        # white kingside castling  
+        board[0][0] = '.'
+        board[0][1] = 'K'
+        board[0][2] = 'R'
+        board[0][3] = '.'
+
+    elif move == 'd8h8'and board[0][3] == 'K':
+        # white queenside castling  
+        board[0][3] = '.'
+        board[0][5] = 'R'
+        board[0][6] = 'K'
+        board[0][7] = '.'
+
+    else:   
+        # apply algebraic move  
+        dict = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5, 'g':6, 'h':7}        
+        x_from = dict[move[0]]
+        y_from = 8 - int(move[1])
+        x_to = dict[move[2]]
+        y_to = 8 - int(move[3])
+        piece = board[y_from][x_from]
+        board[y_from][x_from] = '.'
+        board[y_to][x_to] = piece
+
+        # promote any pawns on last rank to queen
+        if piece == 'p' and y_to == 0:
+            board[y_to][x_to] = 'q'
+        if piece == 'P' and y_to == 7:
+            board[y_to][x_to] = 'Q'
+
+    tensor = one_hot_encode(board)
+    return tensor
 
 
 def swap_fen_colours(fen, turn='black'):
@@ -317,6 +272,7 @@ def swap_fen_colours(fen, turn='black'):
             if turn == 'white':
                 FEN = FEN + ' w KQkq - 0 1'
             break
+
     return FEN
 
 
@@ -324,56 +280,46 @@ def swap_fen_colours(fen, turn='black'):
 print('\u265A ' '\u265B ' '\u265C ' '\u265D ' '\u265E ' '\u265F ' '\u2654 ' '\u2655 ' '\u2656 ' '\u2657 ' '\u2658 ' '\u2659' )
 
 
-def im_concat_2(im1, im2):
-    """ Stitches two images horizontally """
-    im = Image.new('RGB', (im1.width + im2.width, im1.height))
-    im.paste(im1, (0, 0))
-    im.paste(im2, (1*im1.width, 0))
-    return im
-
-
-def im_concat_3(im1, im2, im3):
-    """ Stitches three images horizontally """
-    im = Image.new('RGB', (im1.width + im2.width + im3.width, im1.height))
-    im.paste(im1, (0, 0))
-    im.paste(im2, (1*im1.width, 0))
-    im.paste(im3, (2*im1.width, 0))
-    return im
-
-
-def im_concat_4(im1, im2, im3, im4):
-    """ Stitches four images vertically """
-    im = Image.new('RGB', (im1.width, im1.height + im2.height + im3.height + im4.height))
-    im.paste(im1, (0, 0))
-    im.paste(im2, (0, 1*im1.height))
-    im.paste(im3, (0, 2*im1.height))
-    im.paste(im4, (0, 3*im1.height))
-    return im
-
-
-def most_similar_legal_move(FEN, target_tensor):
-    """ Compares the cosine similarities of all legal board tensors with a target 
-        board tensor and returns the most similar one """
-    
-    # convert FEN
-    ascii_board = fen_to_ascii(FEN)
-    current_state = one_hot_encode(ascii_board)
-    flipped_notation = swap_fen_colours(FEN, turn='black')   # for debugging only
-    board = chess.Board(FEN)
-
-    # find board tensors for all possible legal moves
+def find_legal_moves(FEN):
+    """ returns a list of candidate board tensors with available moves applied """
     candidates = []
-    for i, move in enumerate(board.legal_moves):
-        candidate = update_one_hot(current_state, move)
-        candidates.append(candidate)
+    algebraic_moves = []
+    ascii_board = fen_to_ascii(FEN)
+    current_tensor = one_hot_encode(ascii_board)
+    FEN = swap_fen_colours(FEN, turn='black') 
 
-    # compare board tensors with target tensor and pick the closest match
+    # analyse position with python-chess   
+    board = chess.Board(FEN, chess960=True)
+    for i, move in enumerate(board.legal_moves):
+        candidate = update_one_hot(current_tensor, move)
+        candidates.append(candidate)
+        algebraic_moves.append(move)
+
+    return candidates, algebraic_moves
+
+
+def most_similar_move(candidates, target_tensor, algebraic_moves):
+    """ Compares the cosine similarities of candidate tensors with a target 
+        tensor and returns the most similar one """
     scores = []
     for candidate in candidates:
         f_candidate = candidate.astype('float32')
-        # dot product is proportional to cosine between vectors, given constant vector magnitudes
         dot_product = np.matmul(f_candidate.ravel(), np.transpose(target_tensor.ravel()))
+            # dot product is proportional to cosine between vectors, given constant vector magnitudes
         scores.append(dot_product)
+
     closest_legal_tensor = candidates[np.argmax(scores)]
+    algebraic_move = algebraic_moves[np.argmax(scores)]
     
-    return closest_legal_tensor
+    return closest_legal_tensor, algebraic_move
+
+
+def booleanise(tensor):
+    """ convert tensors probability vectors to one-hot tensor [1,64,13] -> [64,13] """
+    tensor = np.squeeze(tensor) 
+    one_hot_tensor = np.zeros(shape=(64,13), dtype=bool) 
+    for square, piece_vector in enumerate(tensor):
+        index = np.argmax(piece_vector)
+        one_hot_tensor[square][index] = 1 
+
+    return one_hot_tensor
