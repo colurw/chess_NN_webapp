@@ -6,7 +6,7 @@ It is containerised with Docker.  When spun up, the app is available at http://l
 
 When updated code is pushed to Github, an Actions Workflow builds the Docker images and pushes them to DockerHub.  These (along with the latest docker-compose.yml file) are then pulled to an AWS EC2 instance and spun up, using the SSH protocol.
 
-Run it locally using `docker compose -f docker-compose.dev.yml up`
+Run the app locally using `docker compose -f docker-compose.dev.yml up`
 
 ### django web framework
 <img src="https://github.com/colurw/chess_NN/assets/66322644/b3d419ff-06b9-4444-85ba-99531d4db79c" align="right" width="300px"/>
