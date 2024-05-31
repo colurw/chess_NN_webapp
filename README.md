@@ -18,10 +18,9 @@ into tensors, then passed to ensemble_solver(), which returns a tensor represent
 the move to be played in response.  <br><br>
 This tensor is converted by local_chess_tools.py into an image of the next 
 board state, which can be sent as a base64 string back to the browser. <br><br>
-As the training data do not include early-game board states, the user must initially 
-select from one of four fully-developed opening options.  This avoids the need to 
-implement castling - moves of which were excluded from the training dataset to allow 
-a less-complex function to encode the raw data. 
+As the original training data did not include early-game board states, the user had 
+to select one of four fully-developed opening options.  The latest update can
+handle both player's castling moves, which allows a model trained on whole-game data to be added to the ensemble. 
 
 ### web_ensemble_solver.py  
 Several neural networks are presented with the same board state.  The 
@@ -29,5 +28,5 @@ predicted solutions are combined according to decision criteria to produce an
 output that is substantially more accurate than any single neural network is capable 
 of producing, analogous to classic wisdom-of-the-crowds quantity estimation findings.
 
-The decision critera check the legality of the raw average of all predicted moves, before
-excluding illegal moves or predictions with disappearing/cloned pieces.  If the average still does not qualify as a legal move, the most confident prediction is chosen, based on an analysis of the probability vectors. If no legal predictions are found, all possible legal moves are calculated using Python Chess library, and the tensor with the highest cosine similarity to the ensemble's raw average prediction is selected as the new board state. <br clear="right"/>
+The decision critera check the legality of the raw average of all predictions, if this fails, predictions 
+containing illegal moves are removed.  If the new average prediction still does not qualify as a legal move, the most confident legal prediction is chosen, based on an analysis of the probability vectors. If no legal predictions are found, the legal move with the highest cosine similarity to the ensemble's raw average prediction is selected as the new board state. <br clear="right"/>
