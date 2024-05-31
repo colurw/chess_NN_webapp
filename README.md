@@ -15,9 +15,8 @@ called by Urls.py, it returns data that populate the Play.html template with the
 current board image and relevant messages.  <br><br>
 Form data from the browser are sent back to views.py as POST requests, converted
 into tensors, then passed to ensemble_solver(), which returns a tensor representing 
-the move to be played in response.  <br><br>
-This tensor is converted by local_chess_tools.py into an image of the next 
-board state, which can be sent as a base64 string back to the browser. <br><br>
+the board-state with the AI response applied.  <br><br>
+This tensor is converted by local_chess_tools.py into an image, which can be sent as a base-64 string back to the browser. <br><br>
 As the original training data did not include early-game board states, the user had 
 to select one of four fully-developed opening options.  The latest update can
 handle both player's castling moves, which allows a model trained on whole-game data to be added to the ensemble. 
