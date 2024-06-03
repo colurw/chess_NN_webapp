@@ -1,5 +1,4 @@
 import numpy as np
-import cv2
 from PIL import Image,ImageDraw, ImageFont
 import math
 import chess
@@ -107,7 +106,6 @@ def one_hot_to_png(array):
 
     # Create image file
     image = np.full((338, 340, 3),fill_value=255, dtype=np.uint8)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     pil_image = Image.fromarray(image)
     draw = ImageDraw.Draw(pil_image)
 

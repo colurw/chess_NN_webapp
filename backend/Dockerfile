@@ -11,7 +11,6 @@ WORKDIR /services
 # install dependencies
 COPY requirements.txt /services/
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install opencv-python-headless
 
 # copy project code
 COPY . /services
