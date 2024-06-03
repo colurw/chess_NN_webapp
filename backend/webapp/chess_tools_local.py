@@ -153,30 +153,6 @@ def is_move_legal(FEN, moves):
     return is_legal
 
 
-def any_cloned_pieces(x_array, y_array):
-    """ compares input with prediction and returns True if any piece is cloned during a move """
-    one_hot = np.zeros(shape=(64,13), dtype=int)
-    x_array = x_array.astype(int)
-
-    # convert y_array from categorical probabilities to one-hot
-    y_array = np.array(y_array).reshape(64,13)
-    for square, piece_vector in enumerate(y_array):
-        index = np.argmax(piece_vector)
-        one_hot[square][index] = 1 
-    y_array = one_hot.reshape(1,64,13)
-
-    # remove empty square category and get total of each piece type
-    x_array = np.delete(x_array, 12, axis=2)
-    y_array = np.delete(y_array, 12, axis=2)
-    x_totals = x_array.sum(axis=1)
-    y_totals = y_array.sum(axis=1)
-
-    # check if any piece total has increased
-    sub = np.subtract(x_totals, y_totals)
-    boolean = np.any(sub < 0)
-    return boolean
-
-
 def confidence_score(y_array, exp=False):
     """ Evaluates the degree of confidence in a prediction, based on the whole board """
     total = 0.0
