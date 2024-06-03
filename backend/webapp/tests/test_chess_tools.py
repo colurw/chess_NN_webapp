@@ -98,5 +98,6 @@ def test_most_similar_move():
     target_tensor = ct.update_one_hot(one_hot, 'a7a6')
     closest_legal_tensor, algebraic_move = ct.most_similar_move(candidates, target_tensor, algebraic_moves)
     assert np.all(closest_legal_tensor == target_tensor)
+    assert 1 == 2
 
 
