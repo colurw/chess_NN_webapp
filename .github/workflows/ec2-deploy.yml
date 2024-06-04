@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies  
         run: |    
-          pip install -r requirements_for_testing_only.txt
+          pip install -r requirements.txt
 
       - name: Test with pytest  
         run: |  
