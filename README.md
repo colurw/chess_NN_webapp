@@ -9,7 +9,7 @@ When updated code is pushed to Github, an Actions Workflow builds the Docker ima
 Run the app locally using `docker compose -f docker-compose.dev.yml up`
 
 ### django web framework
-<img src="https://github.com/colurw/chess_NN/assets/66322644/b3d419ff-06b9-4444-85ba-99531d4db79c" align="right" width="300px"/>
+<img src="https://github.com/colurw/chess_NN/assets/66322644/b3d419ff-06b9-4444-85ba-99531d4db79c" align="right" width="300px"/> 
 Creates an IP connection to the browser over the Localhost.  When Views.py is 
 called by Urls.py, it returns data that populate the Play.html template with the 
 current board image and relevant messages.  <br><br>
